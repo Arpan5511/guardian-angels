@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block title %}Patient Registration - Guardian Angels{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0"><i class="bi bi-person-plus"></i> Patient Registration</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <h5 class="mb-3">Personal Information</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.first_name.id_for_label }}" class="form-label">First Name</label>
+                                {{ form.first_name|add_class:"form-control" }}
+                                {% if form.first_name.errors %}
+                                    <div class="text-danger small mt-1">{{ form.first_name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.last_name.id_for_label }}" class="form-label">Last Name</label>
+                                {{ form.last_name|add_class:"form-control" }}
+                                {% if form.last_name.errors %}
+                                    <div class="text-danger small mt-1">{{ form.last_name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+                            {{ form.email|add_class:"form-control" }}
+                            {% if form.email.errors %}
+                                <div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.date_of_birth.id_for_label }}" class="form-label">Date of Birth</label>
+                                {{ form.date_of_birth|add_class:"form-control" }}
+                                {% if form.date_of_birth.errors %}
+                                    <div class="text-danger small mt-1">{{ form.date_of_birth.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.gender.id_for_label }}" class="form-label">Gender</label>
+                                {{ form.gender|add_class:"form-select" }}
+                                {% if form.gender.errors %}
+                                    <div class="text-danger small mt-1">{{ form.gender.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <h5 class="mb-3 mt-4">Contact & Address</h5>
+                        <div class="mb-3">
+                            <label for="{{ form.phone.id_for_label }}" class="form-label">Phone Number</label>
+                            {{ form.phone|add_class:"form-control" }}
+                            {% if form.phone.errors %}
+                                <div class="text-danger small mt-1">{{ form.phone.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.address.id_for_label }}" class="form-label">Address</label>
+                            {{ form.address|add_class:"form-control" }}
+                            {% if form.address.errors %}
+                                <div class="text-danger small mt-1">{{ form.address.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.city.id_for_label }}" class="form-label">City</label>
+                                {{ form.city|add_class:"form-control" }}
+                                {% if form.city.errors %}
+                                    <div class="text-danger small mt-1">{{ form.city.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.state.id_for_label }}" class="form-label">State</label>
+                                {{ form.state|add_class:"form-control" }}
+                                {% if form.state.errors %}
+                                    <div class="text-danger small mt-1">{{ form.state.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.pincode.id_for_label }}" class="form-label">Pincode</label>
+                                {{ form.pincode|add_class:"form-control" }}
+                                {% if form.pincode.errors %}
+                                    <div class="text-danger small mt-1">{{ form.pincode.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <h5 class="mb-3 mt-4">Medical Information</h5>
+                        <div class="mb-3">
+                            <label for="{{ form.medical_history.id_for_label }}" class="form-label">Medical History</label>
+                            {{ form.medical_history|add_class:"form-control" }}
+                            <small class="text-muted">Any previous medical conditions or surgeries</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.allergies.id_for_label }}" class="form-label">Allergies</label>
+                            {{ form.allergies|add_class:"form-control" }}
+                            <small class="text-muted">List any known allergies</small>
+                        </div>
+
+                        <h5 class="mb-3 mt-4">Security</h5>
+                        <div class="mb-3">
+                            <label for="{{ form.password.id_for_label }}" class="form-label">Password</label>
+                            {{ form.password|add_class:"form-control" }}
+                            {% if form.password.errors %}
+                                <div class="text-danger small mt-1">{{ form.password.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.password_confirm.id_for_label }}" class="form-label">Confirm Password</label>
+                            {{ form.password_confirm|add_class:"form-control" }}
+                            {% if form.password_confirm.errors %}
+                                <div class="text-danger small mt-1">{{ form.password_confirm.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {{ form.non_field_errors.0 }}
+                            </div>
+                        {% endif %}
+
+                        <button type="submit" class="btn btn-success w-100 mt-3">Register</button>
+                    </form>
+
+                    <hr>
+                    <p class="text-center mb-0">
+                        Already have an account? <a href="{% url 'login' %}">Login here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

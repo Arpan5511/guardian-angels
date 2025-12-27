@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Guardian Angels{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <h1>Welcome to Guardian Angels</h1>
+        <p>Connect with trusted healthcare professionals and book appointments easily</p>
+        <div class="mt-4">
+            <a href="{% url 'doctor_list' %}" class="btn btn-primary-custom me-3">Find Doctors</a>
+            <a href="{% url 'patient_register' %}" class="btn btn-outline-light">Register as Patient</a>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5" style="color: var(--primary-color); font-weight: 700;">Why Choose Guardian Angels?</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-clock-history" style="font-size: 3rem; color: var(--primary-color);"></i>
+                        <h5 class="card-title mt-3">Easy Scheduling</h5>
+                        <p class="card-text">Book appointments at your convenience with real-time availability.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-shield-check" style="font-size: 3rem; color: var(--secondary-color);"></i>
+                        <h5 class="card-title mt-3">Verified Doctors</h5>
+                        <p class="card-text">All doctors are verified professionals with proper credentials.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-wallet2" style="font-size: 3rem; color: #ff9800;"></i>
+                        <h5 class="card-title mt-3">Transparent Pricing</h5>
+                        <p class="card-text">Know the consultation fee upfront with no hidden charges.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5" style="background: linear-gradient(135deg, var(--primary-color), #0052a3); color: white;">
+    <div class="container text-center">
+        <h2 class="mb-4">Ready to Get Started?</h2>
+        <p class="mb-4" style="font-size: 1.1rem;">Join thousands of patients finding the right doctor for their healthcare needs.</p>
+        <div>
+            <a href="{% url 'patient_register' %}" class="btn btn-primary-custom me-3 mb-2">Register as Patient</a>
+            <a href="{% url 'doctor_register' %}" class="btn btn-outline-light mb-2">Register as Doctor</a>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Doctors Section -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5" style="color: var(--primary-color); font-weight: 700;">Featured Doctors</h2>
+        <div class="row">
+            {% for doctor in featured_doctors %}
+                <div class="col-md-4 mb-4">
+                    <div class="doctor-card">
+                        <div class="doctor-avatar">
+                            <i class="bi bi-person"></i>
+                        </div>
+                        <h5 class="doctor-name">Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}</h5>
+                        <p class="doctor-spec">{{ doctor.get_specialization_display }}</p>
+                        <p class="text-muted">{{ doctor.experience_years }} years experience</p>
+                        <p class="doctor-fee">₹{{ doctor.consultation_fee }} per consultation</p>
+                        <a href="{% url 'doctor_detail' doctor.id %}" class="btn btn-sm btn-primary">View Profile</a>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12 text-center">
+                    <p class="text-muted">No doctors available at the moment. Please check back later.</p>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% url 'doctor_list' %}" class="btn btn-primary-custom">View All Doctors</a>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-5" style="background-color: var(--light-bg);">
+    <div class="container">
+        <h2 class="text-center mb-5" style="color: var(--primary-color); font-weight: 700;">What Our Users Say</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div style="color: #ffc107;">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                        </div>
+                        <p class="card-text mt-3">"Guardian Angels made it so easy to find and book an appointment with a specialist. Highly recommended!"</p>
+                        <p class="text-muted">- Rahul Kumar</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div style="color: #ffc107;">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                        </div>
+                        <p class="card-text mt-3">"Great platform with verified doctors and hassle-free booking. Will use it again!"</p>
+                        <p class="text-muted">- Priya Singh</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div style="color: #ffc107;">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                        </div>
+                        <p class="card-text mt-3">"As a doctor, this platform helps me manage my patients efficiently. Excellent system!"</p>
+                        <p class="text-muted">- Dr. Amit Patel</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

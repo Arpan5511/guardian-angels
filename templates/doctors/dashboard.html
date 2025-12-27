@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+
+{% block title %}Doctor Dashboard - Guardian Angels{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 mb-4">
+            <div class="sidebar">
+                <h5 class="mb-3"><i class="bi bi-person-circle"></i> {{ doctor }}</h5>
+                <a href="{% url 'doctor_dashboard' %}" class="sidebar-link active">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+                <a href="{% url 'doctor_profile' %}" class="sidebar-link">
+                    <i class="bi bi-person"></i> My Profile
+                </a>
+                <a href="{% url 'add_timing' %}" class="sidebar-link">
+                    <i class="bi bi-calendar-plus"></i> Add Timing
+                </a>
+                <a href="{% url 'logout' %}" class="sidebar-link">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9">
+            <!-- Profile Card -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-info-circle"></i> Profile Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Name:</strong> Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}</p>
+                            <p><strong>Specialization:</strong> {{ doctor.get_specialization_display }}</p>
+                            <p><strong>License Number:</strong> {{ doctor.license_number }}</p>
+                            <p><strong>Experience:</strong> {{ doctor.experience_years }} years</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Email:</strong> {{ doctor.user.email }}</p>
+                            <p><strong>Phone:</strong> {{ doctor.phone }}</p>
+                            <p><strong>Consultation Fee:</strong> ₹{{ doctor.consultation_fee }}</p>
+                            <p><strong>Status:</strong> <span class="status-badge {% if doctor.is_available %}status-confirmed{% else %}status-cancelled{% endif %}">
+                                {% if doctor.is_available %}Available{% else %}Unavailable{% endif %}
+                            </span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timings Section -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-clock"></i> Working Hours</h5>
+                        <a href="{% url 'add_timing' %}" class="btn btn-sm btn-success">
+                            <i class="bi bi-plus-circle"></i> Add Timing
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if timings %}
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Day</th>
+                                        <th>Start Time</th>
+                                        <th>End Time</th>
+                                        <th>Slot Duration</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for timing in timings %}
+                                        <tr>
+                                            <td>{{ timing.get_day_display }}</td>
+                                            <td>{{ timing.start_time|time:"H:i" }}</td>
+                                            <td>{{ timing.end_time|time:"H:i" }}</td>
+                                            <td>{{ timing.slot_duration }} min</td>
+                                            <td>
+                                                <span class="status-badge {% if timing.is_available %}status-confirmed{% else %}status-cancelled{% endif %}">
+                                                    {% if timing.is_available %}Available{% else %}Unavailable{% endif %}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <a href="{% url 'edit_timing' timing.id %}" class="btn btn-sm btn-warning">Edit</a>
+                                                <form method="post" action="{% url 'delete_timing' timing.id %}" style="display: inline;">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> No timings added yet. <a href="{% url 'add_timing' %}">Add your first timing</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Appointments Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-calendar-check"></i> Appointments</h5>
+                </div>
+                <div class="card-body">
+                    {% if appointments %}
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Patient Name</th>
+                                        <th>Date & Time</th>
+                                        <th>Symptoms</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for appointment in appointments %}
+                                        <tr>
+                                            <td>{{ appointment.patient }}</td>
+                                            <td>{{ appointment.appointment_date|date:"d-m-Y" }} {{ appointment.appointment_time|time:"H:i" }}</td>
+                                            <td>{{ appointment.symptoms|truncatewords:5 }}</td>
+                                            <td>
+                                                <span class="status-badge status-{{ appointment.status|lower }}">
+                                                    {{ appointment.get_status_display }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <a href="{% url 'appointment_detail' appointment.id %}" class="btn btn-sm btn-info">View</a>
+                                                {% if appointment.status == 'pending' %}
+                                                    <form method="post" action="{% url 'confirm_appointment' appointment.id %}" style="display: inline;">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="btn btn-sm btn-success">Confirm</button>
+                                                    </form>
+                                                {% elif appointment.status == 'confirmed' %}
+                                                    <form method="post" action="{% url 'complete_appointment' appointment.id %}" style="display: inline;">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="btn btn-sm btn-success">Complete</button>
+                                                    </form>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> No appointments yet.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

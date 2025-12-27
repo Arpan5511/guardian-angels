@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}Doctors - Guardian Angels{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="mb-4" style="color: var(--primary-color); font-weight: 700;">
+        <i class="bi bi-stethoscope"></i> Find Doctors
+    </h2>
+
+    <!-- Filter Section -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-6">
+                    <label for="specialization" class="form-label">Specialization</label>
+                    <select name="specialization" id="specialization" class="form-select">
+                        <option value="">All Specializations</option>
+                        <option value="cardiology" {% if selected_specialization == 'cardiology' %}selected{% endif %}>Cardiology</option>
+                        <option value="neurology" {% if selected_specialization == 'neurology' %}selected{% endif %}>Neurology</option>
+                        <option value="orthopedics" {% if selected_specialization == 'orthopedics' %}selected{% endif %}>Orthopedics</option>
+                        <option value="pediatrics" {% if selected_specialization == 'pediatrics' %}selected{% endif %}>Pediatrics</option>
+                        <option value="dermatology" {% if selected_specialization == 'dermatology' %}selected{% endif %}>Dermatology</option>
+                        <option value="psychology" {% if selected_specialization == 'psychology' %}selected{% endif %}>Psychology</option>
+                        <option value="general" {% if selected_specialization == 'general' %}selected{% endif %}>General Practice</option>
+                        <option value="gynecology" {% if selected_specialization == 'gynecology' %}selected{% endif %}>Gynecology</option>
+                        <option value="urology" {% if selected_specialization == 'urology' %}selected{% endif %}>Urology</option>
+                        <option value="oncology" {% if selected_specialization == 'oncology' %}selected{% endif %}>Oncology</option>
+                    </select>
+                </div>
+                <div class="col-md-6 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Search</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Doctors Grid -->
+    <div class="row">
+        {% for doctor in doctors %}
+            <div class="col-md-4 col-sm-6 mb-4">
+                <div class="doctor-card">
+                    <div class="doctor-avatar">
+                        <i class="bi bi-person-check"></i>
+                    </div>
+                    <h5 class="doctor-name">Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}</h5>
+                    <p class="doctor-spec">{{ doctor.get_specialization_display }}</p>
+                    <p class="text-muted mb-2">
+                        <i class="bi bi-briefcase"></i> {{ doctor.experience_years }} years experience
+                    </p>
+                    <p class="text-muted mb-2">
+                        <i class="bi bi-telephone"></i> {{ doctor.phone }}
+                    </p>
+                    {% if doctor.bio %}
+                        <p class="text-muted small mb-3">{{ doctor.bio|truncatewords:15 }}</p>
+                    {% endif %}
+                    <p class="doctor-fee">
+                        <i class="bi bi-cash-coin"></i> ₹{{ doctor.consultation_fee }}
+                    </p>
+                    <a href="{% url 'doctor_detail' doctor.id %}" class="btn btn-sm btn-primary w-100">View Profile & Book</a>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info text-center">
+                    <i class="bi bi-info-circle"></i> No doctors found matching your criteria. Please try different filters.
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

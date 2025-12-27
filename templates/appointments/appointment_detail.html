@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}Appointment Details - Guardian Angels{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0"><i class="bi bi-calendar-check"></i> Appointment Details</h4>
+                        <span class="status-badge status-{{ appointment.status|lower }}">
+                            {{ appointment.get_status_display }}
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6 class="text-muted mb-2">Doctor Information</h6>
+                            <p class="mb-1"><strong>Name:</strong> Dr. {{ appointment.doctor.user.first_name }} {{ appointment.doctor.user.last_name }}</p>
+                            <p class="mb-1"><strong>Specialization:</strong> {{ appointment.doctor.get_specialization_display }}</p>
+                            <p class="mb-1"><strong>Phone:</strong> {{ appointment.doctor.phone }}</p>
+                            <p class="mb-1"><strong>Email:</strong> {{ appointment.doctor.user.email }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted mb-2">Patient Information</h6>
+                            <p class="mb-1"><strong>Name:</strong> {{ appointment.patient.user.first_name }} {{ appointment.patient.user.last_name }}</p>
+                            <p class="mb-1"><strong>Phone:</strong> {{ appointment.patient.phone }}</p>
+                            <p class="mb-1"><strong>Email:</strong> {{ appointment.patient.user.email }}</p>
+                            <p class="mb-1"><strong>Date of Birth:</strong> {{ appointment.patient.date_of_birth|date:"d-m-Y" }}</p>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6 class="text-muted mb-2">Appointment Date & Time</h6>
+                            <p class="mb-0" style="font-size: 1.2rem; font-weight: 600; color: var(--primary-color);">
+                                <i class="bi bi-calendar-event"></i> {{ appointment.appointment_date|date:"d-m-Y" }}
+                            </p>
+                            <p style="font-size: 1.2rem; font-weight: 600; color: var(--secondary-color);">
+                                <i class="bi bi-clock"></i> {{ appointment.appointment_time|time:"H:i" }}
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted mb-2">Consultation Fee</h6>
+                            <p style="font-size: 1.2rem; font-weight: 600; color: #ff9800;">
+                                ₹{{ appointment.doctor.consultation_fee }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <h6 class="text-muted mb-2">Symptoms/Reason for Visit</h6>
+                    <p>{{ appointment.symptoms }}</p>
+
+                    {% if appointment.notes %}
+                        <hr>
+                        <h6 class="text-muted mb-2">Doctor's Notes</h6>
+                        <p>{{ appointment.notes }}</p>
+                    {% endif %}
+
+                    {% if appointment.status == 'cancelled' %}
+                        <hr>
+                        <h6 class="text-muted mb-2">Cancellation Reason</h6>
+                        <p>{{ appointment.cancellation_reason }}</p>
+                        <p class="text-muted small">Cancelled on: {{ appointment.cancelled_at|date:"d-m-Y H:i" }}</p>
+                    {% endif %}
+
+                    <hr>
+
+                    <div class="d-flex gap-2">
+                        {% if appointment.status != 'cancelled' and appointment.status != 'completed' %}
+                            <a href="{% url 'cancel_appointment' appointment.id %}" class="btn btn-danger">
+                                <i class="bi bi-x-circle"></i> Cancel Appointment
+                            </a>
+                        {% endif %}
+                        <a href="{% url 'patient_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
